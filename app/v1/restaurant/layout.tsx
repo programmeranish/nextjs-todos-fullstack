@@ -8,7 +8,7 @@ export default function RestuarentLayout({
   console.log("this is something to be run once");
   return (
     <div>
-      this is
+      <div className="bg-black text-white p-4">This is a header</div>
       <div className="text-red-700">{children}</div>
     </div>
   );

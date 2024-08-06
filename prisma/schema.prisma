@@ -13,11 +13,55 @@ datasource db {
   url      = env("POSTGRES_URL")
 }
 
+model Role {
+  id          Int     @id @default(autoincrement())
+  roleName    String  @unique
+  description String?
+  users       User[]
+
+  @@map("roles") // This is optional; you can remove it if the table name in the database matches the model name
+}
+
 model User {
-  id          String  @id @default(uuid())
-  email       String  @unique
-  first_name  String
-  middle_name String?
-  last_name   String
-  avatar      String?
+  id                 String            @id @default(uuid())
+  email              String            @unique
+  firstName          String
+  middleName         String?
+  lastName           String
+  avatar             String?
+  isSuperAdmin       Boolean
+  isAdmin            Boolean
+  isUser             Boolean
+  isClient           Boolean
+  isActive           Boolean
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+  deletedAt          DateTime?
+  roleId             Int
+  role               Role              @relation(fields: [roleId], references: [id])
+  Client             Client?           @relation(fields: [clientId], references: [id])
+  clientId           Int?
+  FacilityLocation   FacilityLocation? @relation(fields: [facilityLocationId], references: [id])
+  facilityLocationId Int?
+}
+
+model Client {
+  id                Int                @id @default(autoincrement())
+  name              String
+  users             User[]
+  facilityLocations FacilityLocation[]
+  // Add other fields related to the client
+
+  @@map("clients") // Map to the "clients" table
+}
+
+model FacilityLocation {
+  id       Int    @id @default(autoincrement())
+  name     String
+  address  String
+  clientId Int
+  client   Client @relation(fields: [clientId], references: [id])
+  users    User[]
+
+  @@map("facility_locations") // Map to the "facility_locations" table
 }
